@@ -74,11 +74,25 @@ function App() {
     { id: 28, name: 'Chatbot Flow', category: 'Automação', icon: '🤖', description: 'Fluxos de conversação' }
   ]
 
-  const loadTemplates = async () => {
-    setLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 500))
-    setTemplates(allTemplates)
-    setLoading(false)
+    const loadTemplates = async () => {
+    setLoading(true);
+    try {
+      // Faz a requisição real para o backend Flask
+      const response = await fetch('/api/templates');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setTemplates(data.templates); // Assume que a API retorna { "templates": [...] }
+    } catch (error) {
+      console.error("Erro ao carregar templates da API:", error);
+      // Fallback para templates hardcoded se a API falhar
+      setTemplates(allTemplates);
+      alert("⚠️ Erro ao carregar templates da API. Usando dados locais para demonstração.");
+    } finally {
+      setLoading(false);
+    }
+  };
   }
 
   useEffect(() => {
