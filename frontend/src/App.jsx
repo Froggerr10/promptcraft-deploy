@@ -3,6 +3,69 @@ import { useState } from 'react'
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [currentView, setCurrentView] = useState('dashboard')
+  const [projects, setProjects] = useState([
+    {
+      id: 1,
+      name: 'Cafeteria Gourmet',
+      description: 'Cafeteria especializada em grãos premium e experiências únicas para amantes de café',
+      icon: '☕',
+      status: 'Ativo',
+      prompts: 8,
+      color: 'from-orange-400 to-pink-400'
+    },
+    {
+      id: 2,
+      name: 'App de Fitness',
+      description: 'Aplicativo mobile para treinos personalizados e acompanhamento de progresso',
+      icon: '💪',
+      status: 'Em progresso',
+      prompts: 12,
+      color: 'from-blue-400 to-purple-400'
+    },
+    {
+      id: 3,
+      name: 'Consultoria Sustentável',
+      description: 'Consultoria em práticas sustentáveis e responsabilidade ambiental para empresas',
+      icon: '🌱',
+      status: 'Planejamento',
+      prompts: 5,
+      color: 'from-green-400 to-teal-400'
+    }
+  ])
+
+  const [templates] = useState([
+    { name: 'Proposta Única de Valor', category: 'Marketing', icon: '🎯', color: 'from-blue-400 to-blue-600', description: 'Crie uma proposta de valor irresistível que diferencia seu produto no mercado' },
+    { name: 'Criação de Persona', category: 'Estratégia', icon: '👤', color: 'from-purple-400 to-purple-600', description: 'Desenvolva personas detalhadas baseadas em dados reais do seu público' },
+    { name: 'Landing Page', category: 'Web Design', icon: '🌐', color: 'from-green-400 to-green-600', description: 'Estruture landing pages de alta conversão com copy persuasivo' },
+    { name: 'VSL Script', category: 'Vídeo Marketing', icon: '🎬', color: 'from-red-400 to-red-600', description: 'Roteiros para vídeos de vendas que engajam e convertem' },
+    { name: 'Títulos Magnéticos', category: 'Copywriting', icon: '✨', color: 'from-yellow-400 to-orange-600', description: 'Headlines que capturam atenção e aumentam cliques' },
+    { name: 'Análise de Concorrência', category: 'Pesquisa', icon: '🔍', color: 'from-indigo-400 to-indigo-600', description: 'Mapeie estratégias dos concorrentes e encontre oportunidades' },
+  ])
+
+  const [selectedProject, setSelectedProject] = useState(null)
+
+  const handleCreateProject = () => {
+    const newProject = {
+      id: projects.length + 1,
+      name: 'Novo Projeto',
+      description: 'Descrição do novo projeto',
+      icon: '🚀',
+      status: 'Planejamento',
+      prompts: 0,
+      color: 'from-gray-400 to-gray-600'
+    }
+    setProjects([...projects, newProject])
+    alert('Novo projeto criado! Clique nele para editar.')
+  }
+
+  const handleProjectClick = (project) => {
+    setSelectedProject(project)
+    setCurrentView('project-detail')
+  }
+
+  const handleUseTemplate = (template) => {
+    alert(`Template "${template.name}" selecionado! Em breve você poderá personalizá-lo.`)
+  }
 
   if (!isLoggedIn) {
     return (
@@ -143,7 +206,10 @@ function App() {
                   <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
                   <p className="text-gray-600 mt-1">Bem-vindo de volta! Gerencie seus prompts de forma inteligente.</p>
                 </div>
-                <button className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <button 
+                  onClick={handleCreateProject}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
                   + Novo Projeto
                 </button>
               </div>
@@ -154,7 +220,7 @@ function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Projetos Ativos</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-1">3</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-1">{projects.length}</p>
                       <p className="text-sm text-green-600 mt-1">+1 este mês</p>
                     </div>
                     <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
@@ -169,7 +235,7 @@ function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Templates Disponíveis</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-1">22</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-1">{templates.length}</p>
                       <p className="text-sm text-blue-600 mt-1">Biblioteca completa</p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
@@ -184,7 +250,7 @@ function App() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Prompts Criados</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-1">47</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-1">{projects.reduce((sum, p) => sum + p.prompts, 0)}</p>
                       <p className="text-sm text-purple-600 mt-1">+12 esta semana</p>
                     </div>
                     <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
@@ -200,67 +266,96 @@ function App() {
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-semibold text-gray-900">Projetos Recentes</h2>
-                  <button className="text-blue-600 hover:text-blue-700 font-medium">Ver todos</button>
+                  <button 
+                    onClick={() => setCurrentView('projects')}
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Ver todos
+                  </button>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-pink-400 rounded-xl flex items-center justify-center">
-                        <span className="text-white text-xl">☕</span>
+                  {projects.map((project) => (
+                    <div 
+                      key={project.id}
+                      onClick={() => handleProjectClick(project)}
+                      className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`w-12 h-12 bg-gradient-to-r ${project.color} rounded-xl flex items-center justify-center`}>
+                          <span className="text-white text-xl">{project.icon}</span>
+                        </div>
+                        <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                          project.status === 'Ativo' ? 'bg-green-100 text-green-700' :
+                          project.status === 'Em progresso' ? 'bg-blue-100 text-blue-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {project.status}
+                        </span>
                       </div>
-                      <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">Ativo</span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                      Cafeteria Gourmet
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      Cafeteria especializada em grãos premium e experiências únicas para amantes de café
-                    </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">8 prompts criados</span>
-                      <span className="text-blue-600 font-medium">Ver projeto →</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-purple-400 rounded-xl flex items-center justify-center">
-                        <span className="text-white text-xl">💪</span>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        {project.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {project.description}
+                      </p>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-500">{project.prompts} prompts criados</span>
+                        <span className="text-blue-600 font-medium">Ver projeto →</span>
                       </div>
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">Em progresso</span>
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                      App de Fitness
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      Aplicativo mobile para treinos personalizados e acompanhamento de progresso
-                    </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">12 prompts criados</span>
-                      <span className="text-blue-600 font-medium">Ver projeto →</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-400 rounded-xl flex items-center justify-center">
-                        <span className="text-white text-xl">🌱</span>
-                      </div>
-                      <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded-full">Planejamento</span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                      Consultoria Sustentável
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      Consultoria em práticas sustentáveis e responsabilidade ambiental para empresas
-                    </p>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-500">5 prompts criados</span>
-                      <span className="text-blue-600 font-medium">Ver projeto →</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {currentView === 'projects' && (
+            <div className="space-y-8">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">Meus Projetos</h1>
+                  <p className="text-gray-600 mt-1">Gerencie todos os seus projetos em um só lugar</p>
+                </div>
+                <button 
+                  onClick={handleCreateProject}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  + Novo Projeto
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {projects.map((project) => (
+                  <div 
+                    key={project.id}
+                    onClick={() => handleProjectClick(project)}
+                    className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${project.color} rounded-xl flex items-center justify-center`}>
+                        <span className="text-white text-xl">{project.icon}</span>
+                      </div>
+                      <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                        project.status === 'Ativo' ? 'bg-green-100 text-green-700' :
+                        project.status === 'Em progresso' ? 'bg-blue-100 text-blue-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        {project.status}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                      {project.name}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      {project.description}
+                    </p>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">{project.prompts} prompts</span>
+                      <span className="text-blue-600 font-medium">Abrir →</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -269,19 +364,12 @@ function App() {
             <div className="space-y-8">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Biblioteca de Templates</h1>
-                <p className="text-gray-600 mt-1">22 templates especializados para acelerar sua criação de prompts</p>
+                <p className="text-gray-600 mt-1">{templates.length} templates especializados para acelerar sua criação de prompts</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  { name: 'Proposta Única de Valor', category: 'Marketing', icon: '🎯', color: 'from-blue-400 to-blue-600' },
-                  { name: 'Criação de Persona', category: 'Estratégia', icon: '👤', color: 'from-purple-400 to-purple-600' },
-                  { name: 'Landing Page', category: 'Web Design', icon: '🌐', color: 'from-green-400 to-green-600' },
-                  { name: 'VSL Script', category: 'Vídeo Marketing', icon: '🎬', color: 'from-red-400 to-red-600' },
-                  { name: 'Títulos Magnéticos', category: 'Copywriting', icon: '✨', color: 'from-yellow-400 to-orange-600' },
-                  { name: 'Análise de Concorrência', category: 'Pesquisa', icon: '🔍', color: 'from-indigo-400 to-indigo-600' },
-                ].map((template, index) => (
-                  <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
+                {templates.map((template, index) => (
+                  <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-200 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 bg-gradient-to-r ${template.color} rounded-xl flex items-center justify-center`}>
                         <span className="text-white text-xl">{template.icon}</span>
@@ -294,9 +382,12 @@ function App() {
                       {template.name}
                     </h3>
                     <p className="text-gray-600 text-sm mb-4">
-                      Template especializado para criar {template.name.toLowerCase()} de alta qualidade
+                      {template.description}
                     </p>
-                    <button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium">
+                    <button 
+                      onClick={() => handleUseTemplate(template)}
+                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 px-4 rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 font-medium"
+                    >
                       Usar Template
                     </button>
                   </div>
@@ -305,7 +396,54 @@ function App() {
             </div>
           )}
 
-          {currentView !== 'dashboard' && currentView !== 'templates' && (
+          {currentView === 'project-detail' && selectedProject && (
+            <div className="space-y-8">
+              <div className="flex items-center space-x-4">
+                <button 
+                  onClick={() => setCurrentView('projects')}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ← Voltar
+                </button>
+                <div className={`w-12 h-12 bg-gradient-to-r ${selectedProject.color} rounded-xl flex items-center justify-center`}>
+                  <span className="text-white text-xl">{selectedProject.icon}</span>
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">{selectedProject.name}</h1>
+                  <p className="text-gray-600">{selectedProject.description}</p>
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                <h2 className="text-xl font-semibold mb-4">Detalhes do Projeto</h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div>
+                    <p className="text-sm text-gray-500">Status</p>
+                    <p className="font-semibold">{selectedProject.status}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Prompts</p>
+                    <p className="font-semibold">{selectedProject.prompts}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Criado em</p>
+                    <p className="font-semibold">15/12/2024</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Última edição</p>
+                    <p className="font-semibold">Hoje</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+                <h2 className="text-xl font-semibold mb-4">Prompts do Projeto</h2>
+                <p className="text-gray-600">Funcionalidade em desenvolvimento. Em breve você poderá criar e gerenciar prompts específicos para este projeto.</p>
+              </div>
+            </div>
+          )}
+
+          {(currentView === 'prompts' || currentView === 'upload' || currentView === 'help') && (
             <div className="text-center py-16">
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-4xl">🚧</span>
